@@ -63,7 +63,7 @@ public class EmployeeService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found with id " + id);
         }
 
-        if (employee.getName() == null) {
+        if (employee.getName() != null && !employee.getName().isEmpty()) {
             existingEmployee.get().setName(employee.getName());
         }
 
