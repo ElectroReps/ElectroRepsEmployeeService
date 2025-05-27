@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static jakarta.ws.rs.core.Response.noContent;
@@ -25,23 +26,18 @@ public class EmployeeService {
         if (employee.isPresent()) {
             return ResponseEntity.ok(employee.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found with id " + id);
         }
     }
 
     public ResponseEntity<?> getEmployeeWithParams(String name) {
 
-        if(name == null || name.isEmpty()) {
+        if(name == null) {
             return ResponseEntity.ok(employeeRepository.findAll());
         }
 
-        Optional<Employee> employee = employeeRepository.findByName(name);
-
-        if (employee.isPresent()) {
-            return ResponseEntity.ok(employee.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Employee> employees = employeeRepository.findByName(name);
+            return ResponseEntity.ok(employees);
 
     }
 
@@ -55,7 +51,9 @@ public class EmployeeService {
         if ( existingEmployee.isEmpty() ) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found with id " + id);
         }
-        return ResponseEntity.ok(existingEmployee.get());
+        employee.setId(existingEmployee.get().getId());
+        employeeRepository.save(employee);
+        return ResponseEntity.ok(employee);
     }
 
     public ResponseEntity<?> UpdateEmployeeName(Long id, EmployeeNameDTO employee) {
@@ -63,9 +61,11 @@ public class EmployeeService {
         Optional<Employee> existingEmployee = employeeRepository.findById(id);
         if ( existingEmployee.isEmpty() ) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found with id " + id);
-        }else if (employee.getName() == null || employee.getName().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Employee name cannot be empty");
+        }else if (employee.getName() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Employee name cannot be null");
         }
+        existingEmployee.get().setName(employee.getName());
+        employeeRepository.save(existingEmployee.get());
         return ResponseEntity.ok(existingEmployee.get());
     }
 
@@ -74,7 +74,8 @@ public class EmployeeService {
         if (existingEmployee.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found with id " + id);
         }
-        return ResponseEntity.ok(existingEmployee.get());
+        employeeRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 
