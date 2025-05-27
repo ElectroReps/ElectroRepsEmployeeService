@@ -61,10 +61,12 @@ public class EmployeeService {
         Optional<Employee> existingEmployee = employeeRepository.findById(id);
         if ( existingEmployee.isEmpty() ) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No employee found with id " + id);
-        }else if (employee.getName() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Employee name cannot be null");
         }
-        existingEmployee.get().setName(employee.getName());
+
+        if (employee.getName() == null) {
+            existingEmployee.get().setName(employee.getName());
+        }
+
         employeeRepository.save(existingEmployee.get());
         return ResponseEntity.ok(existingEmployee.get());
     }
