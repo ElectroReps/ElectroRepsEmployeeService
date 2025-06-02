@@ -1,39 +1,89 @@
 package com.electroreps.ElectroRepsEmployeeService.repositories;
 
+import com.electroreps.ElectroRepsEmployeeService.models.Employee;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+@Transactional
 @SpringBootTest
 public class EmployeeRepoTests {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    Employee exampleEmployee;
+
+    @BeforeEach
+    public void setUp() {
+
+        employeeRepository.deleteAll();
+
+        exampleEmployee = new Employee();
+        exampleEmployee.setName("John Doe");
+        exampleEmployee = employeeRepository.save(exampleEmployee);
+
+    }
+
     @Test
     public void test_find_all() {
-        fail("Not implemented yet");
+        Employee exampleEmployee2 = new Employee();
+        exampleEmployee2.setName("John Doe 2");
+        employeeRepository.save(exampleEmployee2);
+
+        Employee exampleEmployee3 = new Employee();
+        exampleEmployee3.setName("John Doe 3");
+        employeeRepository.save(exampleEmployee3);
+
+        List<Employee> employees = employeeRepository.findAll();
+        assertNotNull(employees);
+        assertNotNull(employees.get(0).getName());
+        assertEquals("John Doe", employees.get(0).getName());
+        assertNotNull(employees.get(1).getName());
+        assertEquals("John Doe 2", employees.get(1).getName());
+        assertNotNull(employees.get(2).getName());
+        assertEquals("John Doe 3", employees.get(2).getName());
+
+
     }
 
     @Test
     public void test_find_by_name() {
-        fail("Not implemented yet");
+        List<Employee> employees = employeeRepository.findByName("John Doe");
+        assertNotNull(employees);
+        assertEquals(1, employees.size());
+        assertNotNull(employees.get(0).getName());
+        assertEquals("John Doe", employees.get(0).getName());
     }
 
-    @Test
-    public void test_find_by_name_and_email() {
-        fail("Not implemented yet");
-    }
 
     @Test
     public void test_save_employee() {
-        fail("Not implemented yet");
+        assertNotNull(exampleEmployee);
+        assertNotNull(exampleEmployee.getId());
+        assertEquals("John Doe", exampleEmployee.getName());
+
     }
 
     @Test
     public void test_update_employee() {
-        fail("Not implemented yet");
+        exampleEmployee.setName("Jane Doe");
+        Employee updatedEmployee = employeeRepository.save(exampleEmployee);
+        assertNotNull(updatedEmployee);
+        assertEquals("Jane Doe", updatedEmployee.getName());
     }
 
     @Test
     public void test_delete_employee() {
-        fail("Not implemented yet");
+        Long id = exampleEmployee.getId();
+        assertNotNull(id);
+        employeeRepository.deleteById(id);
+        assertFalse(employeeRepository.findById(id).isPresent(), "Employee should be deleted");
     }
 }
