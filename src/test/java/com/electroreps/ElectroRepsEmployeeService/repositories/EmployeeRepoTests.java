@@ -19,18 +19,16 @@ public class EmployeeRepoTests {
     private EmployeeRepository employeeRepository;
 
     Employee exampleEmployee;
-    // This class contains tests for the EmployeeRepository
+
     @BeforeEach
     public void setUp() {
 
-        // This method can be used to set up any common test data or state before each test
-        // For example, you could create some initial employees in the repository if needed
         employeeRepository.deleteAll();
 
         exampleEmployee = new Employee();
         exampleEmployee.setName("John Doe");
-        employeeRepository.save(exampleEmployee);
-        // }
+        exampleEmployee = employeeRepository.save(exampleEmployee);
+
     }
 
     @Test

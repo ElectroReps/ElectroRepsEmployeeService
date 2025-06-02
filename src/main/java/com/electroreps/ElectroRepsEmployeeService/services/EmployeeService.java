@@ -3,6 +3,7 @@ package com.electroreps.ElectroRepsEmployeeService.services;
 import com.electroreps.ElectroRepsEmployeeService.dtos.EmployeeNameDTO;
 import com.electroreps.ElectroRepsEmployeeService.models.Employee;
 import com.electroreps.ElectroRepsEmployeeService.repositories.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,10 +16,10 @@ import java.util.Optional;
 import static jakarta.ws.rs.core.Response.noContent;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     public ResponseEntity<?> getEmployeeById(Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);

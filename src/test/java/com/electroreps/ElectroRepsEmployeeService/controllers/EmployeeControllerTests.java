@@ -94,12 +94,11 @@ public class EmployeeControllerTests {
     @Test
     public void testPOST_Employee_Invalid() throws Exception {
         Employee employee = new Employee();
-        // Invalid name
+
 
         Mockito.when(employeeService.postEmployee(Mockito.any(Employee.class)))
                 .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 
-        // i wnt the response to be bad request and the body to contain the error message "Validation failed, please send a valid Employee entity as request body "
         MvcResult mvcResult = mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(employee)))
@@ -155,7 +154,7 @@ public class EmployeeControllerTests {
                 .andExpect(status().isBadRequest())
                 .andReturn();
         String responseBody = mvcResult.getResponse().getContentAsString();
-        assertEquals("Validation failed, please send a valid Employee entity as request body ", responseBody); // Ensure the error message is correct
+        assertEquals("Validation failed, please send a valid Employee entity as request body ", responseBody);
     }
 
     @Test
